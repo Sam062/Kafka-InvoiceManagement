@@ -1,0 +1,31 @@
+server:
+  port: 9695
+
+spring:
+  application:
+    name: ORDER-INVOICE-MANAGER
+  datasource:
+    url: jdbc:h2:mem:invoiceDb
+    driverClassName: org.h2.Driver
+    username: inv
+    password: inv
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+  kafka:
+    producer:
+      bootstrap-servers:
+        - localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_URL:http://localhost:8888}/eureka
+
+logging:
+  level:
+    root: DEBUG

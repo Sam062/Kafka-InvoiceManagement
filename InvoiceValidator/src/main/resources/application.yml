@@ -1,0 +1,25 @@
+server:
+  port: 9696
+
+spring:
+  application:
+    name: INVOICE-VALIDATOR
+  kafka:
+    consumer:
+      bootstrap-servers:
+        - localhost:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: INV
+      auto-offset-reset: earliest
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_URL:http://localhost:8888}/eureka
+
+logging:
+  level:
+    root: DEBUG?
+
+
