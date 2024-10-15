@@ -8,7 +8,7 @@ spring:
     url: jdbc:h2:mem:invoiceDb
     driverClassName: org.h2.Driver
     username: inv
-    password: inv
+    password:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
   h2:

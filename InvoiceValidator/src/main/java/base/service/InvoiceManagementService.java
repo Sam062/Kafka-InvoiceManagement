@@ -1,58 +1,32 @@
 package base.service;
 
-import base.entity.InvoiceEntity;
 import base.model.InvoiceModel;
-import base.repo.InvoiceRepo;
-import base.utils.InvoiceEntityConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-
-import static base.utils.InvoiceEntityConverter.invoiceEntityToModel;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Service
 public class InvoiceManagementService {
 
     @Autowired
-    private InvoiceRepo invoiceRepo;
-
+    private WebClient webClient;
 
     public InvoiceModel validateInvoiceById(Long invoiceId) {
-        log.info("validating invoice: {}", invoiceId);
+        final String URI = "/invoice/validateInvoice/" + invoiceId;
 
-        //TODO: Bug fix to get value here
-        Optional<InvoiceEntity> invoiceEntityOptional = invoiceRepo.findById(invoiceId);
+        log.info("Calling Invoice Validator for ID: {} and URI : {}", invoiceId, URI);
 
-        log.info("Invoice by ID: {}", invoiceEntityOptional.orElse(null));
-        InvoiceModel invoiceModel = invoiceEntityOptional
-                .map(InvoiceEntityConverter::invoiceEntityToModel)
-                .orElse(null);
-        log.info("Conversion from entity: {}", invoiceModel);
+        InvoiceModel invoiceModel =
+                webClient
+                        .get()
+                        .uri(URI)
+                        .retrieve()
+                        .bodyToMono(InvoiceModel.class)
+                        .block();
 
-        if (isValidInvoice(invoiceModel)) {
-            log.info("Valid Invoice, updating DB");
-            InvoiceEntity invoiceEntity = invoiceEntityOptional.get();
-            invoiceEntity.setValid(true);
-
-            InvoiceEntity updatedInvoiceEntity = invoiceRepo.save(invoiceEntity);
-            log.info("Invoice updated: {}", updatedInvoiceEntity);
-            return invoiceEntityToModel(updatedInvoiceEntity);
-        }
-        log.info("Invalid invoice");
-        return null;
+        log.info("Response from invoice validator: {}", invoiceModel);
+        return invoiceModel;
     }
-
-    private boolean isValidInvoice(InvoiceModel invoiceModel) {
-        return invoiceModel != null &&
-                invoiceModel.getInvoiceId() != null &&
-                invoiceModel.getCustomerName() != null &&
-                invoiceModel.getProductName() != null &&
-                invoiceModel.getAmount() <= 0.0 &&
-                invoiceModel.getPurchaseDate() != null;
-    }
-
-
 }

@@ -4,6 +4,8 @@ import base.model.InvoiceModel;
 import base.model.Order;
 
 public class OrderInvoiceConverter {
+    private OrderInvoiceConverter() {
+    }
 
     public static InvoiceModel orderToInvoice(Order order) {
         return new InvoiceModel(

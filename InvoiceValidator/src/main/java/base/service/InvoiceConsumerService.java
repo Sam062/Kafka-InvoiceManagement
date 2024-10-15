@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class InvoiceConsumerService {
-    private final String TOPIC_NAME = "MINI_PRO_INVOICES";
+    private static final String TOPIC_NAME = "MINI_PRO_INVOICES";
 
     @Autowired
     private InvoiceManagementService invoiceManagementService;
@@ -19,7 +19,16 @@ public class InvoiceConsumerService {
     @KafkaListener(topics = TOPIC_NAME, groupId = "INV")
     public void consume(String msg) throws JsonProcessingException {
 
-        //{"invoiceId":1,"customerName":"SHIVAM MISHRA","productName":"HEADSET","amount":124.3,"purchaseDate":1728751945244,"valid":false}
+        /*
+        {
+            "invoiceId":1,
+            "customerName":"SHIVAM MISHRA",
+            "productName":"HEADSET",
+            "amount":124.3,
+            "purchaseDate":1728751945244,
+            "valid":false
+         }
+         */
         log.info("Invoice message received: {}", msg);
 
         InvoiceModel invoiceModel = new ObjectMapper().readValue(msg, InvoiceModel.class);

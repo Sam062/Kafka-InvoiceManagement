@@ -4,6 +4,8 @@ import base.entity.InvoiceEntity;
 import base.model.InvoiceModel;
 
 public class InvoiceEntityConverter {
+    private InvoiceEntityConverter() {
+    }
 
     public static InvoiceModel invoiceEntityToModel(InvoiceEntity entity) {
         return new InvoiceModel(
